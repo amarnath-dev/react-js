@@ -1,25 +1,34 @@
-import logo from './logo.svg';
 import './App.css';
+import Axios from 'axios';
+import { useEffect, useState } from 'react';
+
 
 function App() {
+  let [currFact, setCurrFact] = useState("");
+
+  useEffect(() => {
+    Axios.get("https://excuser-three.vercel.app/v1/excuse/").then((res) => {
+      const excuse = res.data[0]?.excuse || "No excuse are there";
+      setCurrFact(excuse)
+    });
+  }, []);
+
+  const getNewExcuse = () => {
+    Axios.get("https://excuser-three.vercel.app/v1/excuse/").then((res) => {
+      const excuse = res.data[0]?.excuse || "No Excuse are there";
+      setCurrFact(excuse)
+    })
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="App" >
+      <div>
+        <button onClick={getNewExcuse}>Generate Execuss</button>
+        <p>{currFact}</p>
+      </div>
     </div>
   );
+  
 }
 
 export default App;
