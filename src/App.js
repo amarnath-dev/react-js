@@ -23,7 +23,7 @@ function App() {
   return (
     <div className="App" >
       <div>
-        <button onClick={getNewExcuse}>Generate Execuss</button>
+        <button onClick={getNewExcuse}>Generate Execus</button>
         <p>{currFact}</p>
       </div>
     </div>
@@ -31,4 +31,4 @@ function App() {
   
 }
 
-export default App;
+export default App
