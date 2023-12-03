@@ -13,6 +13,7 @@ Body Code
 function App() {
   let [inputValue, setInputValue] = useState("");
   let [inputStore, setInputStore] = useState([]);
+  let [editId, setEditId] = useState(null);
 
   const getValue = (event) => {
     setInputValue(event.target.value);
@@ -24,12 +25,22 @@ function App() {
       return;
     };
 
-    let task = {
-      taskId: inputStore.length === 0 ? 1 : inputStore.length + 1,
-      taskName: inputValue,
-      completed: false,
+
+    if (editId) {
+      setInputStore(inputStore.map((task) => {
+        return task.taskId === editId ? { ...task, taskName: inputValue } : task;
+      }))
+
+      setEditId(null)
+    } else {
+      let task = {
+        taskId: inputStore.length === 0 ? 1 : inputStore.length + 1,
+        taskName: inputValue,
+        completed: false,
+      }
+      setInputStore([...inputStore, task]);
     }
-    setInputStore([...inputStore, task]);
+    setInputValue("");
   }
 
   const deleteTask = (taskId) => {
@@ -50,22 +61,26 @@ function App() {
       } else {
         return task;
       }
-
     }));
   }
 
+  const editTask = (taskId) => {
+    setEditId(taskId);
+
+    const editItem = inputStore.find((task) => task.taskId === taskId);
+    setInputValue(editItem.taskName);
+  };
+
   return (
-    <div className="App" >
-      
+    <div className="App">
       <div>
-        <input onChange={getValue}></input>
-        <button onClick={addTask}>Add Task</button>
+        <input onChange={getValue} value={inputValue} className='input-field'></input>
+        <button onClick={addTask} className='input-button'>{editId ? "Edit Task" : "Add Task"}</button>
       </div>
 
       <div>
-
         {inputStore.map((task) => {
-          return <Task taskName={task.taskName} taskId={task.taskId} changeStatus={changeStatus} completed={task.completed} deleteTask={deleteTask} />
+          return <Task taskName={task.taskName} taskId={task.taskId} changeStatus={changeStatus} completed={task.completed} editTask={editTask} deleteTask={deleteTask} />
         })}
 
       </div>
@@ -79,15 +94,20 @@ export default App;
 Item Listing Component
 
 ```js
+
 export const Task = (props) => {
 
-    return <div>
-        <h1 style={{ color: props.completed ? "green" : "red" }}>{props.taskName}</h1>
-        <button onClick={() => props.deleteTask(props.taskId)}> X </button>
-        <button onClick={() => props.changeStatus(props.taskId)}>Complete</button>
+    return (<div className="task-display">
+        <h1 style={{ color: props.completed ? "green" : "black" }} className="task-display">{props.taskName}</h1>
+        <div className="btn-container">
+            <button onClick={() => props.changeStatus(props.taskId)} className="btn">Complete</button>
+            <button onClick={() => props.deleteTask(props.taskId)} className="btn">Delete</button>
+            <button onClick={() => props.editTask(props.taskId)} className="btn">Edit</button>
+        </div>
     </div>
-
+    );
 }
+
 
 ```
 
