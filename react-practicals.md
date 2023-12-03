@@ -57,7 +57,7 @@ function App() {
     setInputStore(inputStore.map((task) => {
 
       if (task.taskId === taskId) {
-        return { ...task, completed: true };
+        return { ...task, completed: !task.completed };
       } else {
         return task;
       }
